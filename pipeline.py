@@ -50,9 +50,9 @@ CATEGORICAL_FEATURES = [
 
 ALL_FEATURES = NUMERICAL_FEATURES + CATEGORICAL_FEATURES
 
+
 # DATA INGESTION
 def load_data(features_path: str, targets_path: str) -> pd.DataFrame:
-    """Muat dan gabungkan dataset fitur dan target."""
     print(f"[INFO] Memuat data dari:\n  {features_path}\n  {targets_path}")
     df_features = pd.read_csv(features_path)
     df_targets = pd.read_csv(targets_path)
@@ -62,8 +62,9 @@ def load_data(features_path: str, targets_path: str) -> pd.DataFrame:
 
 
 def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
-    """Terapkan feature engineering untuk membuat fitur turunan."""
+    """Sama persis dengan EDA notebook."""
     df = df.copy()
+
     df['skill_composite'] = (
         df['coding_skill_rating'] +
         df['communication_skill_rating'] +
@@ -97,33 +98,38 @@ def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 def prepare_data(df: pd.DataFrame):
     """
     Persiapkan fitur dan target, lakukan train-test split 80:20.
-    
-    Note: Untuk regresi, hanya mahasiswa yang Placed yang digunakan
-    karena salary=0 untuk Not Placed bukan target prediksi yang bermakna.
+    - Klasifikasi: pakai semua mahasiswa
+    - Regresi: filter hanya yang Placed, karena salary=0 untuk Not Placed
+      bukan nilai nyata melainkan placeholder (missing value tersamar)
     """
     X = df[ALL_FEATURES]
     y_clf = (df['placement_status'] == 'Placed').astype(int)
 
-    # Untuk regresi: filter hanya yang Placed (salary > 0)
+    # Split klasifikasi (dengan stratify)
+    X_train, X_test, y_clf_train, y_clf_test = train_test_split(
+        X, y_clf, test_size=0.2, random_state=42, stratify=y_clf
+    )
+
+    # Split regresi — hanya mahasiswa yang Placed (salary nyata)
     df_placed = df[df['placement_status'] == 'Placed']
     X_reg = df_placed[ALL_FEATURES]
     y_reg = df_placed['salary_lpa']
 
-    X_train, X_test, y_clf_train, y_clf_test = train_test_split(
-        X, y_clf, test_size=0.2, random_state=42, stratify=y_clf
-    )
     X_reg_train, X_reg_test, y_reg_train, y_reg_test = train_test_split(
         X_reg, y_reg, test_size=0.2, random_state=42
     )
 
-    print(f"[INFO] Train (clf): {len(X_train)} | Test: {len(X_test)}")
-    print(f"[INFO] Train (reg, placed only): {len(X_reg_train)} | Test: {len(X_reg_test)}")
+    print(f"[INFO] Train size (clf): {X_train.shape[0]} | Test: {X_test.shape[0]}")
+    print(f"[INFO] Train size (reg, placed only): {X_reg_train.shape[0]} | Test: {X_reg_test.shape[0]}")
+    print(f"[INFO] Class distribution (train): Placed={y_clf_train.sum()}, Not Placed={(~y_clf_train.astype(bool)).sum()}")
+    print(f"[INFO] Class distribution (test):  Placed={y_clf_test.sum()}, Not Placed={(~y_clf_test.astype(bool)).sum()}")
+
     return X_train, X_test, y_clf_train, y_clf_test, X_reg_train, X_reg_test, y_reg_train, y_reg_test
 
 
 # PREPROCESSOR
 def build_preprocessor() -> ColumnTransformer:
-    """Bangun preprocessing pipeline."""
+    """Sama persis dengan EDA notebook."""
     numeric_transformer = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())
@@ -140,27 +146,26 @@ def build_preprocessor() -> ColumnTransformer:
 
 # TRAINING WITH MLFLOW
 def train_classification(X_train, X_test, y_train, y_test, preprocessor):
-    """Latih 3 model klasifikasi dan track dengan MLflow."""
+    """Nama model sama seperti EDA notebook."""
     mlflow.set_experiment("Student_Placement_Classification")
 
     clf_models = {
-        'Logistic_Regression': {
+        'Logistic Regression': {
             'model': LogisticRegression(random_state=42, max_iter=1000, class_weight='balanced'),
             'params': {'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42}
         },
-        'Random_Forest_Classifier': {
+        'Random Forest': {
             'model': RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced'),
             'params': {'n_estimators': 100, 'class_weight': 'balanced', 'random_state': 42}
         },
-        'Gradient_Boosting_Classifier': {
+        'Gradient Boosting': {
             'model': GradientBoostingClassifier(n_estimators=100, random_state=42),
             'params': {'n_estimators': 100, 'learning_rate': 0.1, 'random_state': 42}
         }
     }
 
-    best_model = None
-    best_f1 = 0
-    best_name = ""
+    clf_results = {}
+    clf_pipelines = {}
 
     print("\n" + "="*50)
     print("CLASSIFICATION EXPERIMENT")
@@ -181,62 +186,57 @@ def train_classification(X_train, X_test, y_train, y_test, preprocessor):
             f1 = f1_score(y_test, y_pred, average='weighted')
             auc = roc_auc_score(y_test, y_prob)
 
-            # Log parameters
+            clf_results[name] = {'Accuracy': acc, 'F1-Score': f1, 'ROC-AUC': auc}
+            clf_pipelines[name] = pipeline
+
             mlflow.log_params(config['params'])
             mlflow.log_param("model_type", name)
             mlflow.log_param("dataset", "Dataset_A")
-
-            # Log metrics
             mlflow.log_metric("accuracy", acc)
             mlflow.log_metric("f1_score_weighted", f1)
             mlflow.log_metric("roc_auc", auc)
+            mlflow.sklearn.log_model(pipeline, f"model_{name.replace(' ', '_')}")
 
-            # Log model artifact
-            mlflow.sklearn.log_model(pipeline, f"model_{name}")
+            print(f"\n  {name}")
+            print(f"  Accuracy : {acc:.4f}")
+            print(f"  F1-Score : {f1:.4f}")
+            print(f"  ROC-AUC  : {auc:.4f}")
 
-            print(f"\n  [{name}]")
-            print(f"  Accuracy  : {acc:.4f}")
-            print(f"  F1-Score  : {f1:.4f}")
-            print(f"  ROC-AUC   : {auc:.4f}")
+    # Pilih best model berdasarkan F1-Score (sama seperti notebook)
+    best_clf_name = max(clf_results, key=lambda x: clf_results[x]['F1-Score'])
+    best_clf = clf_pipelines[best_clf_name]
 
-            if f1 > best_f1:
-                best_f1 = f1
-                best_model = pipeline
-                best_name = name
+    print(f"\n Best Classifier: {best_clf_name} (F1={clf_results[best_clf_name]['F1-Score']:.4f})")
 
-    print(f"\n Best Classifier: {best_name} (F1={best_f1:.4f})")
-
-    # Save best model
     pkl_path = os.path.join(MODEL_DIR, "best_classifier.pkl")
     with open(pkl_path, 'wb') as f:
-        pickle.dump(best_model, f)
+        pickle.dump(best_clf, f)
     print(f" Saved: {pkl_path}")
 
-    return best_model, best_name
+    return best_clf, best_clf_name, clf_results
 
 
 def train_regression(X_train, X_test, y_train, y_test, preprocessor):
-    """Latih 3 model regresi dan track dengan MLflow."""
+    """Nama model sama seperti EDA notebook."""
     mlflow.set_experiment("Student_Salary_Regression")
 
     reg_models = {
-        'Ridge_Regression': {
+        'Ridge Regression': {
             'model': Ridge(alpha=1.0),
             'params': {'alpha': 1.0}
         },
-        'Random_Forest_Regressor': {
+        'Random Forest': {
             'model': RandomForestRegressor(n_estimators=100, random_state=42),
             'params': {'n_estimators': 100, 'random_state': 42}
         },
-        'Gradient_Boosting_Regressor': {
+        'Gradient Boosting': {
             'model': GradientBoostingRegressor(n_estimators=100, random_state=42),
             'params': {'n_estimators': 100, 'learning_rate': 0.1, 'random_state': 42}
         }
     }
 
-    best_model = None
-    best_r2 = -np.inf
-    best_name = ""
+    reg_results = {}
+    reg_pipelines = {}
 
     print("\n" + "="*50)
     print("  REGRESSION EXPERIMENT")
@@ -256,38 +256,34 @@ def train_regression(X_train, X_test, y_train, y_test, preprocessor):
             mae = mean_absolute_error(y_test, y_pred)
             r2 = r2_score(y_test, y_pred)
 
-            # Log parameters
+            reg_results[name] = {'RMSE': rmse, 'MAE': mae, 'R²': r2}
+            reg_pipelines[name] = pipeline
+
             mlflow.log_params(config['params'])
             mlflow.log_param("model_type", name)
             mlflow.log_param("dataset", "Dataset_A")
-
-            # Log metrics
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("mae", mae)
             mlflow.log_metric("r2_score", r2)
+            mlflow.sklearn.log_model(pipeline, f"model_{name.replace(' ', '_')}")
 
-            # Log model artifact
-            mlflow.sklearn.log_model(pipeline, f"model_{name}")
+            print(f"\n  {name}")
+            print(f"  RMSE : {rmse:.4f}")
+            print(f"  MAE  : {mae:.4f}")
+            print(f"  R²   : {r2:.4f}")
 
-            print(f"\n  [{name}]")
-            print(f"  RMSE   : {rmse:.4f}")
-            print(f"  MAE    : {mae:.4f}")
-            print(f"  R²     : {r2:.4f}")
+    # Pilih best model berdasarkan R² tertinggi (sama seperti notebook)
+    best_reg_name = max(reg_results, key=lambda x: reg_results[x]['R²'])
+    best_reg = reg_pipelines[best_reg_name]
 
-            if r2 > best_r2:
-                best_r2 = r2
-                best_model = pipeline
-                best_name = name
+    print(f"\n Best Regressor: {best_reg_name} (R²={reg_results[best_reg_name]['R²']:.4f})")
 
-    print(f"\n Best Regressor: {best_name} (R²={best_r2:.4f})")
-
-    # Save best model
     pkl_path = os.path.join(MODEL_DIR, "best_regressor.pkl")
     with open(pkl_path, 'wb') as f:
-        pickle.dump(best_model, f)
+        pickle.dump(best_reg, f)
     print(f" Saved: {pkl_path}")
 
-    return best_model, best_name
+    return best_reg, best_reg_name, reg_results
 
 
 # MAIN
@@ -297,15 +293,14 @@ def main():
     print("Dataset A")
     print("="*60)
 
-    # Set MLflow tracking URI
     mlruns_path = os.path.join(DATA_DIR, "mlruns")
     os.makedirs(mlruns_path, exist_ok=True)
     mlflow.set_tracking_uri(f"file:///{mlruns_path.replace(os.sep, '/')}")
 
-    # 1. Data Ingestion
+    # 1. Load data
     df = load_data(FEATURES_PATH, TARGETS_PATH)
 
-    # 2. Feature Engineering
+    # 2. Feature engineering
     df = apply_feature_engineering(df)
 
     # 3. Prepare data
@@ -314,37 +309,42 @@ def main():
     # 4. Build preprocessor
     preprocessor = build_preprocessor()
 
-    # 5. Train classification models
-    best_clf, clf_name = train_classification(X_train, X_test, y_clf_train, y_clf_test, preprocessor)
+    # 5. Train classification
+    best_clf, clf_name, clf_results = train_classification(
+        X_train, X_test, y_clf_train, y_clf_test, preprocessor
+    )
 
-    # 6. Train regression models
-    best_reg, reg_name = train_regression(X_reg_train, X_reg_test, y_reg_train, y_reg_test, preprocessor)
+    # 6. Train regression (hanya data Placed)
+    best_reg, reg_name, reg_results = train_regression(
+        X_reg_train, X_reg_test, y_reg_train, y_reg_test, preprocessor
+    )
 
-    # 7. Save feature metadata
+    # 7. Save feature metadata (sama seperti notebook, tanpa best_classifier/regressor)
     meta = {
         'numerical_features': NUMERICAL_FEATURES,
         'categorical_features': CATEGORICAL_FEATURES,
-        'all_features': ALL_FEATURES,
-        'best_classifier': clf_name,
-        'best_regressor': reg_name
+        'all_features': ALL_FEATURES
     }
     with open(os.path.join(MODEL_DIR, 'feature_metadata.json'), 'w') as f:
-        json.dump(meta, f, indent=2)
+        json.dump(meta, f)
 
-    print("\n" + "="*60)
-    print("PIPELINE SELESAI")
-    print("="*60)
-    print(f"  Best Classifier : {clf_name}")
-    print(f"  Best Regressor  : {reg_name}")
-    print(f"  Model disimpan di: {MODEL_DIR}/")
-    print("="*60)
+    # 8. Final summary (format sama persis dengan notebook)
+    print("\nModel berhasil disimpan!")
+    print(f"  models/best_classifier.pkl  : {clf_name}")
+    print(f"  models/best_regressor.pkl   : {reg_name}")
+    print(f"  models/feature_metadata.json")
+    print()
+    print(f"FINAL SUMMARY")
+    print(f"Best Classifier : {clf_name}")
+    print(f"  - Accuracy : {clf_results[clf_name]['Accuracy']:.4f}")
+    print(f"  - F1-Score : {clf_results[clf_name]['F1-Score']:.4f}")
+    print(f"  - ROC-AUC  : {clf_results[clf_name]['ROC-AUC']:.4f}")
+    print()
+    print(f"Best Regressor  : {reg_name}")
+    print(f"  - RMSE : {reg_results[reg_name]['RMSE']:.4f}")
+    print(f"  - MAE  : {reg_results[reg_name]['MAE']:.4f}")
+    print(f"  - R²   : {reg_results[reg_name]['R²']:.4f}")
 
 
 if __name__ == "__main__":
     main()
-
-
-"""
-Jalankan : mlflow ui
-Jalankan: python pipeline.py
-"""

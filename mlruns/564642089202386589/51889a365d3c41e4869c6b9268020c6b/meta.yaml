@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/564642089202386589/51889a365d3c41e4869c6b9268020c6b/artifacts
+end_time: 1776615201102
+entry_point_name: ''
+experiment_id: '564642089202386589'
+lifecycle_stage: active
+run_id: 51889a365d3c41e4869c6b9268020c6b
+run_name: Gradient_Boosting_Classifier
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776615191025
+status: 3
+tags: []
+user_id: '62895'
