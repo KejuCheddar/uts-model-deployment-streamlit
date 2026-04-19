@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-# ── Config ──────────────────────────────────────────────────
+# Config 
 API_URL = "http://localhost:8000"
 
 st.set_page_config(
@@ -26,7 +26,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── CSS ─────────────────────────────────────────────────────
+# CSS 
 st.markdown("""
 <style>
     .main-banner {
@@ -56,7 +56,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ── API Health Check ────────────────────────────────────────
+# API Health Check 
 def check_api_health():
     try:
         r = requests.get(f"{API_URL}/health", timeout=3)
@@ -67,7 +67,7 @@ def check_api_health():
     return False, {}
 
 
-# ── Helper: POST request ────────────────────────────────────
+# Helper: POST request 
 def call_api(endpoint: str, payload: dict):
     try:
         r = requests.post(f"{API_URL}{endpoint}", json=payload, timeout=10)
@@ -82,9 +82,7 @@ def call_api(endpoint: str, payload: dict):
         return None, f"❌ Error: {str(e)}"
 
 
-# ═══════════════════════════════════════════════════════════
 # HEADER
-# ═══════════════════════════════════════════════════════════
 st.markdown("""
 <div class="main-banner">
     <h1>🚀 Student Placement Predictor</h1>
@@ -114,15 +112,13 @@ with col_s2:
 
 st.markdown("")
 
-# ═══════════════════════════════════════════════════════════
 # SIDEBAR INPUT
-# ═══════════════════════════════════════════════════════════
 with st.sidebar:
-    st.markdown("## 🧑‍🎓 Data Mahasiswa")
+    st.markdown("## Data Mahasiswa")
     st.caption("Isi profil mahasiswa untuk prediksi")
     st.markdown("---")
 
-    with st.expander("🎓 Data Akademik", expanded=True):
+    with st.expander("Data Akademik", expanded=True):
         gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
         branch = st.selectbox("Jurusan", [
             "Computer Science", "Information Technology",
@@ -135,18 +131,18 @@ with st.sidebar:
         attendance_pct = st.slider("Kehadiran (%)", 50.0, 100.0, 87.0, 0.5)
         study_hours = st.slider("Jam Belajar/Hari", 0.0, 12.0, 5.0, 0.5)
 
-    with st.expander("💻 Technical Skills"):
+    with st.expander("Technical Skills"):
         coding_skill = st.slider("Coding Skill (1-10)", 1, 10, 7)
         comm_skill = st.slider("Communication Skill (1-10)", 1, 10, 7)
         aptitude_skill = st.slider("Aptitude Skill (1-10)", 1, 10, 7)
 
-    with st.expander("🏆 Pengalaman & Aktivitas"):
+    with st.expander("Pengalaman & Aktivitas"):
         internships = st.number_input("Internship", 0, 5, 1)
         projects = st.number_input("Proyek", 0, 15, 4)
         certifications = st.number_input("Sertifikasi", 0, 15, 3)
         hackathons = st.number_input("Hackathon", 0, 10, 2)
 
-    with st.expander("🌿 Gaya Hidup"):
+    with st.expander("Gaya Hidup"):
         sleep_hours = st.slider("Jam Tidur/Malam", 3.0, 12.0, 7.0, 0.5)
         stress_level = st.slider("Tingkat Stres (1-10)", 1, 10, 4)
         part_time_job = st.selectbox("Part-time Job", ["No", "Yes"])
@@ -156,14 +152,14 @@ with st.sidebar:
         extracurricular = st.selectbox("Ekstrakurikuler", ["Low", "Medium", "High"])
 
     st.markdown("---")
-    st.markdown("### 🎯 Pilih Prediksi")
+    st.markdown("### Pilih Prediksi")
     scenario = st.radio("Skenario", [
         "🏢 Placement saja (Klasifikasi)",
         "💰 Salary saja (Regresi)",
         "🔗 Keduanya (Combined)"
     ])
 
-    predict_btn = st.button("🚀 Kirim ke API & Prediksi", use_container_width=True)
+    predict_btn = st.button("Kirim ke API & Prediksi", use_container_width=True)
 
 
 # ── Build Payload ────────────────────────────────────────────
@@ -185,10 +181,8 @@ payload = {
     "extracurricular_involvement": extracurricular
 }
 
-# ═══════════════════════════════════════════════════════════
 # MAIN TABS
-# ═══════════════════════════════════════════════════════════
-tab1, tab2, tab3 = st.tabs(["🔮 Hasil Prediksi", "📦 Request & Response JSON", "🔬 Skenario Batch"])
+tab1, tab2, tab3 = st.tabs(["Hasil Prediksi", "Request & Response JSON", "Skenario Batch"])
 
 with tab1:
     if predict_btn:
@@ -196,13 +190,13 @@ with tab1:
             st.error("FastAPI tidak aktif! Jalankan server terlebih dahulu.")
         else:
             # ── Skenario 1: Placement Only
-            if scenario == "🏢 Placement saja (Klasifikasi)":
+            if scenario == "Placement saja (Klasifikasi)":
                 with st.spinner("Mengirim request ke API /predict/placement ..."):
                     result, err = call_api("/predict/placement", payload)
                 if err:
                     st.error(err)
                 else:
-                    st.success("✅ Response diterima dari FastAPI!")
+                    st.success("Response diterima dari FastAPI!")
                     col1, col2 = st.columns(2)
                     with col1:
                         placed = result['placed']
@@ -228,17 +222,17 @@ with tab1:
                         st.pyplot(fig)
                         plt.close()
                     with col2:
-                        st.markdown("#### 📊 Detail Hasil")
+                        st.markdown("#### Detail Hasil")
                         st.json(result)
 
             # ── Skenario 2: Salary Only
-            elif scenario == "💰 Salary saja (Regresi)":
+            elif scenario == "Salary saja (Regresi)":
                 with st.spinner("Mengirim request ke API /predict/salary ..."):
                     result, err = call_api("/predict/salary", payload)
                 if err:
                     st.error(err)
                 else:
-                    st.success("✅ Response diterima dari FastAPI!")
+                    st.success("Response diterima dari FastAPI!")
                     col1, col2 = st.columns(2)
                     with col1:
                         pred_sal = result['predicted_salary_lpa']
@@ -267,7 +261,7 @@ with tab1:
                         st.pyplot(fig)
                         plt.close()
                     with col2:
-                        st.markdown("#### 📊 Detail Hasil")
+                        st.markdown("#### Detail Hasil")
                         st.json(result)
 
             # ── Skenario 3: Combined
@@ -277,7 +271,7 @@ with tab1:
                 if err:
                     st.error(err)
                 else:
-                    st.success("✅ Response diterima dari FastAPI!")
+                    st.success("Response diterima dari FastAPI!")
                     col1, col2 = st.columns(2)
 
                     with col1:
@@ -291,25 +285,17 @@ with tab1:
 
                     with col2:
                         sal = result['salary']
-                        st.markdown(f"#### 💰 ₹ {sal['predicted_salary_lpa']} LPA")
+                        st.markdown(f"####  ₹ {sal['predicted_salary_lpa']} LPA")
                         st.metric("Range",
                                   f"₹{sal['salary_range_low']} – {sal['salary_range_high']} LPA")
 
                     st.info(f"**Rekomendasi:** {result['recommendation']}")
 
-                    with st.expander("📋 Raw JSON Response"):
+                    with st.expander("Raw JSON Response"):
                         st.json(result)
     else:
-        st.info("👈 Isi form di sidebar dan klik **Kirim ke API & Prediksi**")
         st.markdown("""
         #### Arsitektur Decoupled
-        ```
-        [Streamlit Frontend]  ──POST──▶  [FastAPI Backend]
-        (frontend_streamlit.py)           (api_fastapi.py)
-              Port: 8501                     Port: 8000
-                        ↓
-                  [ML Models .pkl]
-        ```
         **Keunggulan arsitektur decoupled:**
         - Backend & Frontend dapat di-deploy & scale secara independen
         - API dapat digunakan oleh banyak client (web, mobile, dll)
@@ -318,7 +304,7 @@ with tab1:
 
 
 with tab2:
-    st.markdown("### 📦 Request & Response Detail")
+    st.markdown("### Request & Response Detail")
     st.markdown("#### Request Payload (dikirim ke API):")
     st.json(payload)
 
@@ -345,7 +331,7 @@ with tab2:
 
 
 with tab3:
-    st.markdown("### 🔬 Skenario Batch Testing")
+    st.markdown("### Skenario Batch Testing")
     st.markdown("Uji beberapa profil mahasiswa sekaligus untuk perbandingan.")
 
     test_cases = {
@@ -363,7 +349,7 @@ with tab3:
         }
     }
 
-    if st.button("▶️ Jalankan Batch Testing", use_container_width=True):
+    if st.button("Jalankan Batch Testing", use_container_width=True):
         if not is_healthy:
             st.error("FastAPI tidak aktif!")
         else:
@@ -424,4 +410,4 @@ with tab3:
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close()
-                st.success("✅ Batch testing selesai!")
+                st.success("Batch testing selesai!")
