@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/models/m-fcde72e74e0a47d9bdaac3231cb0e8f8/artifacts
+creation_timestamp: 1776594122537
+experiment_id: '533668696090648319'
+last_updated_timestamp: 1776594130478
+model_id: m-fcde72e74e0a47d9bdaac3231cb0e8f8
+model_type: null
+name: model_Random_Forest_Regressor
+source_run_id: 1e1e314753ab4d3b9c8a05d30b9b0496
+status: 2
+status_message: null

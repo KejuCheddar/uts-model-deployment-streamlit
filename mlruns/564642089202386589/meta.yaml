@@ -1,0 +1,7 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/564642089202386589
+creation_time: 1776532423608
+experiment_id: '564642089202386589'
+last_update_time: 1776532423608
+lifecycle_stage: active
+name: Student_Placement_Classification
+workspace: default

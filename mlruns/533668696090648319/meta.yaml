@@ -1,0 +1,7 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319
+creation_time: 1776532460627
+experiment_id: '533668696090648319'
+last_update_time: 1776532460627
+lifecycle_stage: active
+name: Student_Salary_Regression
+workspace: default

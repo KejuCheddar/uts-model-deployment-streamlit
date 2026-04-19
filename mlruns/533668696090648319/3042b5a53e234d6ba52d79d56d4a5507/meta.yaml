@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/3042b5a53e234d6ba52d79d56d4a5507/artifacts
+end_time: 1776594116563
+entry_point_name: ''
+experiment_id: '533668696090648319'
+lifecycle_stage: active
+run_id: 3042b5a53e234d6ba52d79d56d4a5507
+run_name: Ridge_Regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776594108600
+status: 3
+tags: []
+user_id: '62895'
