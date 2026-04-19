@@ -1,11 +1,8 @@
 """
-========================================================
 UTS Model Deployment - DTSC6012001
 Soal 3: Monolithic Deployment dengan Streamlit
-========================================================
-Jalankan: streamlit run app_streamlit.py
-Deploy  : streamlit share (Streamlit Cloud via GitHub)
 """
+
 
 import os
 import json
