@@ -1,6 +1,6 @@
 """
-UTS Model Deployment - DTSC6012001
 Soal 3: Monolithic Deployment dengan Streamlit
+LINK Streamlit = https://uts-model-deployment-app.streamlit.app/ 
 """
 
 
@@ -106,11 +106,11 @@ def engineer_features(row: dict) -> pd.DataFrame:
 
 # SIDEBAR — INPUT FORM
 with st.sidebar:
-    st.markdown("## 📋 Data Mahasiswa")
+    st.markdown("# Data Mahasiswa")
     st.markdown("---")
 
     # Academic Info
-    st.markdown("### 🎓 Akademik")
+    st.markdown("## Akademik")
     gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
     branch = st.selectbox("Jurusan", [
         "Computer Science", "Information Technology", "Electronics",
@@ -123,18 +123,18 @@ with st.sidebar:
     attendance_pct = st.slider("Kehadiran (%)", 50.0, 100.0, 85.0, 0.5)
     study_hours = st.slider("Jam Belajar/Hari", 0.0, 12.0, 4.0, 0.5)
 
-    st.markdown("### 💻 Technical Skills")
+    st.markdown("### Technical Skills")
     coding_skill = st.slider("Coding Skill (1-10)", 1, 10, 6)
     comm_skill = st.slider("Communication Skill (1-10)", 1, 10, 6)
     aptitude_skill = st.slider("Aptitude Skill (1-10)", 1, 10, 6)
 
-    st.markdown("### 🏆 Pengalaman")
+    st.markdown("### Pengalaman")
     internships = st.number_input("Internship", 0, 5, 1)
     projects = st.number_input("Proyek", 0, 15, 3)
     certifications = st.number_input("Sertifikasi", 0, 15, 2)
     hackathons = st.number_input("Hackathon", 0, 10, 1)
 
-    st.markdown("### 🌿 Lifestyle")
+    st.markdown("### Lifestyle")
     sleep_hours = st.slider("Jam Tidur/Malam", 3.0, 12.0, 7.0, 0.5)
     stress_level = st.slider("Tingkat Stres (1-10)", 1, 10, 5)
     part_time_job = st.selectbox("Part-time Job", ["Yes", "No"])
@@ -149,14 +149,13 @@ with st.sidebar:
 # MAIN CONTENT
 st.markdown("""
 <div class="main-header">
-    <h1>🎓 Student Placement & Salary Predictor</h1>
-    <p>Prediksi status penempatan kerja dan estimasi gaji menggunakan Machine Learning</p>
-    <small>UTS DTSC6012001 — Model Deployment | Dataset A</small>
+    <h1>Student Placement & Salary Predictor</h1>
+    <p>Prediksi status penempatan kerja dan estimasi gaji menggunakan Model Machine Learning</p>
 </div>
 """, unsafe_allow_html=True)
 
 # Tabs
-tab1, tab2, tab3 = st.tabs(["🔮 Prediksi", "📊 Analisis Fitur", "ℹ️ Info Model"])
+tab1, tab2, tab3 = st.tabs(["Prediksi", "Analisis Fitur", "Info Model"])
 
 with tab1:
     if predict_btn:
@@ -183,7 +182,7 @@ with tab1:
         # Predictions
         clf_pred = clf_model.predict(X_input)[0]
         clf_prob = clf_model.predict_proba(X_input)[0]
-        placement_label = "Placed ✅" if clf_pred == 1 else "Not Placed ❌"
+        placement_label = "Placed" if clf_pred == 1 else "Not Placed"
         placement_prob = clf_prob[1] if clf_pred == 1 else clf_prob[0]
 
         reg_pred = reg_model.predict(X_input)[0]
@@ -193,7 +192,7 @@ with tab1:
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("### 🏢 Status Penempatan Kerja")
+            st.markdown("###Status Penempatan Kerja")
             badge_class = "placed-badge" if clf_pred == 1 else "not-placed-badge"
             st.markdown(
                 f'<div style="text-align:center; margin:1rem 0">'
@@ -224,14 +223,14 @@ with tab1:
             plt.close()
 
         with col2:
-            st.markdown("### 💰 Estimasi Gaji")
+            st.markdown("### Estimasi Gaji")
             st.metric(
                 "Prediksi Gaji",
                 f"₹ {reg_pred:.2f} LPA",
                 help="Estimasi gaji dalam Lakh Per Annum"
             )
             if reg_pred > 0:
-                st.info(f"💡 Setara sekitar **Rp {reg_pred * 180_000:.0f}/tahun**")
+                st.info(f"Setara sekitar **Rp {reg_pred * 180_000:.0f}/tahun**")
 
             # Salary gauge
             fig2, ax2 = plt.subplots(figsize=(5, 3))
@@ -256,7 +255,7 @@ with tab1:
 
         # ─ Profile Summary
         st.markdown("---")
-        st.markdown("### 📌 Ringkasan Profil Mahasiswa")
+        st.markdown("### Ringkasan Profil Mahasiswa")
         skill_composite = (coding_skill + comm_skill + aptitude_skill) / 3
         exp_score = internships*2 + projects + certifications + hackathons
 
@@ -267,12 +266,12 @@ with tab1:
         c4.metric("Attendance", f"{attendance_pct:.0f}%")
 
     else:
-        st.info("👈 Isi data mahasiswa di sidebar, lalu klik **Prediksi Sekarang**")
+        st.info("Isi data mahasiswa di sidebar, lalu klik **Prediksi Sekarang**")
         st.markdown("""
-        #### 🔍 Tentang Aplikasi Ini
+        #### Tentang Aplikasi Ini
         Aplikasi ini menggunakan **Machine Learning** untuk memprediksi:
-        - ✅ **Status Penempatan Kerja** — apakah mahasiswa akan *Placed* atau *Not Placed*
-        - 💰 **Estimasi Gaji** — prediksi gaji dalam LPA (*Lakh Per Annum*)
+        - **Status Penempatan Kerja** — apakah mahasiswa akan *Placed* atau *Not Placed*
+        - **Estimasi Gaji** — prediksi gaji dalam LPA (*Lakh Per Annum*)
 
         **Model yang digunakan:**
         | Task | Algoritma | Performa |
@@ -283,7 +282,7 @@ with tab1:
 
 
 with tab2:
-    st.markdown("### 📊 Analisis Fitur Input")
+    st.markdown("### Analisis Fitur Input")
     if predict_btn:
         # Radar chart of key metrics
         categories = ['CGPA', 'Coding', 'Communication', 'Aptitude',
@@ -351,14 +350,14 @@ with tab3:
 
     with col1:
         st.markdown("""
-        #### 🤖 Model Klasifikasi
+        #### Model Klasifikasi
         **Algoritma**: Gradient Boosting Classifier
         - **F1-Score (Weighted)**: 0.874
         - **ROC-AUC**: ~0.88
         - **Accuracy**: ~0.89
         - **Strategi**: Class-balanced training
 
-        #### 🔧 Preprocessing
+        #### Preprocessing
         - Numerical: Median Imputation + StandardScaler
         - Categorical: Mode Imputation + OneHotEncoder
         - Feature Engineering: 5 fitur turunan
