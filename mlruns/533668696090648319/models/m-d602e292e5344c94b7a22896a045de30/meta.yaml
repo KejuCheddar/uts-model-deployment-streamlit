@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/models/m-d602e292e5344c94b7a22896a045de30/artifacts
+creation_timestamp: 1776771104376
+experiment_id: '533668696090648319'
+last_updated_timestamp: 1776771115281
+model_id: m-d602e292e5344c94b7a22896a045de30
+model_type: null
+name: model_Ridge_Regression
+source_run_id: 03ba381aa1db4bc79260cc93845c0643
+status: 2
+status_message: null

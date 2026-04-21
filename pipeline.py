@@ -62,7 +62,6 @@ def load_data(features_path: str, targets_path: str) -> pd.DataFrame:
 
 
 def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
-    """Sama persis dengan EDA notebook."""
     df = df.copy()
 
     df['skill_composite'] = (
@@ -96,12 +95,6 @@ def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prepare_data(df: pd.DataFrame):
-    """
-    Persiapkan fitur dan target, lakukan train-test split 80:20.
-    - Klasifikasi: pakai semua mahasiswa
-    - Regresi: filter hanya yang Placed, karena salary=0 untuk Not Placed
-      bukan nilai nyata melainkan placeholder (missing value tersamar)
-    """
     X = df[ALL_FEATURES]
     y_clf = (df['placement_status'] == 'Placed').astype(int)
 
@@ -129,7 +122,6 @@ def prepare_data(df: pd.DataFrame):
 
 # PREPROCESSOR
 def build_preprocessor() -> ColumnTransformer:
-    """Sama persis dengan EDA notebook."""
     numeric_transformer = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())
@@ -146,7 +138,6 @@ def build_preprocessor() -> ColumnTransformer:
 
 # TRAINING WITH MLFLOW
 def train_classification(X_train, X_test, y_train, y_test, preprocessor):
-    """Nama model sama seperti EDA notebook."""
     mlflow.set_experiment("Student_Placement_Classification")
 
     clf_models = {
@@ -166,10 +157,6 @@ def train_classification(X_train, X_test, y_train, y_test, preprocessor):
 
     clf_results = {}
     clf_pipelines = {}
-
-    print("\n" + "="*50)
-    print("CLASSIFICATION EXPERIMENT")
-    print("="*50)
 
     for name, config in clf_models.items():
         with mlflow.start_run(run_name=name):
@@ -217,7 +204,6 @@ def train_classification(X_train, X_test, y_train, y_test, preprocessor):
 
 
 def train_regression(X_train, X_test, y_train, y_test, preprocessor):
-    """Nama model sama seperti EDA notebook."""
     mlflow.set_experiment("Student_Salary_Regression")
 
     reg_models = {
@@ -288,11 +274,6 @@ def train_regression(X_train, X_test, y_train, y_test, preprocessor):
 
 # MAIN
 def main():
-    print("="*60)
-    print("RUNNING PIPELINE FILE")
-    print("Dataset A")
-    print("="*60)
-
     mlruns_path = os.path.join(DATA_DIR, "mlruns")
     os.makedirs(mlruns_path, exist_ok=True)
     mlflow.set_tracking_uri(f"file:///{mlruns_path.replace(os.sep, '/')}")

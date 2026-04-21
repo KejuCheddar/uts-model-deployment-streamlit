@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/models/m-acf13b59dd664167a96599eb95a55389/artifacts
+creation_timestamp: 1776771122221
+experiment_id: '533668696090648319'
+last_updated_timestamp: 1776771131868
+model_id: m-acf13b59dd664167a96599eb95a55389
+model_type: null
+name: model_Random_Forest
+source_run_id: d063546d79654fec95fc7d0c8ec94017
+status: 2
+status_message: null

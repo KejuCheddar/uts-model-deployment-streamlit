@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/564642089202386589/models/m-dd281f99f7074c65a11143812f0a9376/artifacts
+creation_timestamp: 1776771058024
+experiment_id: '564642089202386589'
+last_updated_timestamp: 1776771079193
+model_id: m-dd281f99f7074c65a11143812f0a9376
+model_type: null
+name: model_Logistic_Regression
+source_run_id: 3fe86809e0e24a86b06fcc648c84e5eb
+status: 2
+status_message: null
