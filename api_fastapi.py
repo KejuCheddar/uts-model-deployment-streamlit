@@ -1,12 +1,3 @@
-"""
-========================================================
-UTS Model Deployment - DTSC6012001
-Soal 4: Decoupled Architecture — FastAPI Backend
-========================================================
-Jalankan  : uvicorn api_fastapi:app --reload --port 8000
-Swagger UI: http://localhost:8000/docs
-"""
-
 import os
 import json
 import pickle
@@ -18,24 +9,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
-# ── Path Setup ─────────────────────────────────────────────
+# Path Setup 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
-# ── FastAPI App ────────────────────────────────────────────
+# FastAPI App 
 app = FastAPI(
-    title="🎓 Student Placement Prediction API",
-    description="""
-## API Prediksi Penempatan & Gaji Mahasiswa
-
-API ini menyediakan dua endpoint prediksi:
-
-- **POST /predict/placement** — Prediksi status penempatan kerja (Klasifikasi)
-- **POST /predict/salary** — Estimasi gaji mahasiswa (Regresi)
-- **POST /predict/both** — Prediksi keduanya sekaligus
-
-### Dataset: Dataset A | UTS DTSC6012001
-    """,
+    title="Student Placement Prediction API",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -48,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Load Models ────────────────────────────────────────────
+# Load Models 
 def load_artifacts():
     with open(os.path.join(MODEL_DIR, "best_classifier.pkl"), "rb") as f:
         clf = pickle.load(f)
@@ -60,7 +40,7 @@ def load_artifacts():
 
 clf_model, reg_model, feature_meta = load_artifacts()
 
-# ── Input Schema ───────────────────────────────────────────
+# Input Schema 
 class StudentInput(BaseModel):
     gender: str = Field(..., example="Male", description="Jenis kelamin: Male / Female")
     branch: str = Field(..., example="Computer Science", description="Jurusan kuliah")
@@ -127,7 +107,7 @@ class StudentInput(BaseModel):
         }
 
 
-# ── Output Schemas ─────────────────────────────────────────
+# Output Schemas 
 class PlacementResponse(BaseModel):
     placement_status: str
     placed: bool
@@ -147,7 +127,7 @@ class CombinedResponse(BaseModel):
     recommendation: str
 
 
-# ── Feature Engineering ────────────────────────────────────
+# Feature Engineering 
 def prepare_input(data: StudentInput) -> pd.DataFrame:
     row = data.model_dump()
     df = pd.DataFrame([row])
@@ -178,10 +158,7 @@ def prepare_input(data: StudentInput) -> pd.DataFrame:
 
     return df[feature_meta['all_features']]
 
-
-# ═══════════════════════════════════════════════════════════
 # ENDPOINTS
-# ═══════════════════════════════════════════════════════════
 
 @app.get("/", tags=["Health"])
 def root():
@@ -325,13 +302,13 @@ def predict_both(data: StudentInput):
         skill_avg = (data.coding_skill_rating + data.communication_skill_rating +
                      data.aptitude_skill_rating) / 3
         if placed and reg_pred >= 15:
-            rec = "✅ Profil sangat kuat! Siap bersaing di perusahaan tier-1."
+            rec = "Profil sangat kuat! Siap bersaing di perusahaan tier-1."
         elif placed and reg_pred >= 10:
-            rec = "✅ Peluang penempatan baik. Tingkatkan skill untuk salary lebih tinggi."
+            rec = "Peluang penempatan baik. Tingkatkan skill untuk salary lebih tinggi."
         elif not placed and data.cgpa >= 7.5:
-            rec = "⚠️ CGPA baik, namun perlu tambah pengalaman & skill teknis."
+            rec = "CGPA baik, namun perlu tambah pengalaman & skill teknis."
         else:
-            rec = "💪 Fokus pada peningkatan CGPA, skill, dan portofolio proyek."
+            rec = "Fokus pada peningkatan CGPA, skill, dan portofolio proyek."
 
         return CombinedResponse(
             placement=placement,

@@ -18,7 +18,6 @@ MODEL_DIR = os.path.join(BASE_DIR, "models")
 # Page Config 
 st.set_page_config(
     page_title="Student Placement Predictor",
-    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
 )

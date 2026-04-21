@@ -1,14 +1,3 @@
-"""
-========================================================
-UTS Model Deployment - DTSC6012001
-Soal 4: Decoupled Architecture — Streamlit Frontend
-========================================================
-Jalankan (setelah FastAPI aktif):
-  streamlit run frontend_streamlit.py
-
-Pastikan FastAPI sudah berjalan di: http://localhost:8000
-"""
-
 import requests
 import streamlit as st
 import pandas as pd
@@ -20,8 +9,7 @@ import matplotlib.patches as mpatches
 API_URL = "http://localhost:8000"
 
 st.set_page_config(
-    page_title="Student Predictor — Decoupled",
-    page_icon="🚀",
+    page_title="Student Predictor",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -85,9 +73,7 @@ def call_api(endpoint: str, payload: dict):
 # HEADER
 st.markdown("""
 <div class="main-banner">
-    <h1>🚀 Student Placement Predictor</h1>
-    <p>Decoupled Architecture — Streamlit Frontend × FastAPI Backend</p>
-    <small>UTS DTSC6012001 | Dataset A</small>
+    <h1>Student Placement Predictor</h1>
 </div>
 """, unsafe_allow_html=True)
 
