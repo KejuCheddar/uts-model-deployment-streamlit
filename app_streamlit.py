@@ -1,8 +1,6 @@
 """
-Soal 3: Monolithic Deployment dengan Streamlit
 LINK Streamlit = https://uts-model-deployment-app.streamlit.app/ 
 """
-
 
 import os
 import json
@@ -104,7 +102,7 @@ def engineer_features(row: dict) -> pd.DataFrame:
     return df[feature_meta['all_features']]
 
 
-# SIDEBAR — INPUT FORM
+# SIDEBAR INPUTS
 with st.sidebar:
     st.markdown("# Data Mahasiswa")
     st.markdown("---")
@@ -146,7 +144,7 @@ with st.sidebar:
     predict_btn = st.button("🔮 Prediksi Sekarang", use_container_width=True)
 
 
-# MAIN CONTENT
+# Main Header
 st.markdown("""
 <div class="main-header">
     <h1>Student Placement & Salary Predictor</h1>
@@ -188,7 +186,7 @@ with tab1:
         reg_pred = reg_model.predict(X_input)[0]
         reg_pred = max(0.0, reg_pred)
 
-        # ─ Result Header
+        # Result Header
         col1, col2 = st.columns(2)
 
         with col1:
@@ -253,7 +251,7 @@ with tab1:
             st.pyplot(fig2)
             plt.close()
 
-        # ─ Profile Summary
+        # Profile Summary
         st.markdown("---")
         st.markdown("### Ringkasan Profil Mahasiswa")
         skill_composite = (coding_skill + comm_skill + aptitude_skill) / 3
@@ -267,18 +265,6 @@ with tab1:
 
     else:
         st.info("Isi data mahasiswa di sidebar, lalu klik **Prediksi Sekarang**")
-        st.markdown("""
-        #### Tentang Aplikasi Ini
-        Aplikasi ini menggunakan **Machine Learning** untuk memprediksi:
-        - **Status Penempatan Kerja** — apakah mahasiswa akan *Placed* atau *Not Placed*
-        - **Estimasi Gaji** — prediksi gaji dalam LPA (*Lakh Per Annum*)
-
-        **Model yang digunakan:**
-        | Task | Algoritma | Performa |
-        |------|-----------|----------|
-        | Klasifikasi | Gradient Boosting | F1 = 0.874 |
-        | Regresi | Gradient Boosting | R² = 0.774 |
-        """)
 
 
 with tab2:
