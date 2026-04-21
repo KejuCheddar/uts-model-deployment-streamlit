@@ -190,7 +190,7 @@ with tab1:
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("###Status Penempatan Kerja")
+            st.markdown("### Status Penempatan Kerja")
             badge_class = "placed-badge" if clf_pred == 1 else "not-placed-badge"
             st.markdown(
                 f'<div style="text-align:center; margin:1rem 0">'

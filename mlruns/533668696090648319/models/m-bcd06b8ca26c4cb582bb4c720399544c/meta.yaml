@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/models/m-bcd06b8ca26c4cb582bb4c720399544c/artifacts
+creation_timestamp: 1776771413286
+experiment_id: '533668696090648319'
+last_updated_timestamp: 1776771423653
+model_id: m-bcd06b8ca26c4cb582bb4c720399544c
+model_type: null
+name: model_Gradient_Boosting
+source_run_id: c664728b9d4c4d82b9ade0ecc222c363
+status: 2
+status_message: null

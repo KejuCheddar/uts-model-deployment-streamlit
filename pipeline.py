@@ -224,10 +224,6 @@ def train_regression(X_train, X_test, y_train, y_test, preprocessor):
     reg_results = {}
     reg_pipelines = {}
 
-    print("\n" + "="*50)
-    print("  REGRESSION EXPERIMENT")
-    print("="*50)
-
     for name, config in reg_models.items():
         with mlflow.start_run(run_name=name):
             pipeline = Pipeline([
