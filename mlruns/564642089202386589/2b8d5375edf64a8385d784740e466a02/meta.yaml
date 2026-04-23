@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/564642089202386589/2b8d5375edf64a8385d784740e466a02/artifacts
+end_time: 1776952319612
+entry_point_name: ''
+experiment_id: '564642089202386589'
+lifecycle_stage: active
+run_id: 2b8d5375edf64a8385d784740e466a02
+run_name: Logistic Regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776952302944
+status: 3
+tags: []
+user_id: '62895'

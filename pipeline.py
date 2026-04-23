@@ -306,7 +306,7 @@ def main():
         json.dump(meta, f)
 
     # 8. Final summary (format sama persis dengan notebook)
-    print("\nModel berhasil disimpan!")
+    print("\nModel berhasil disimpan")
     print(f"  models/best_classifier.pkl  : {clf_name}")
     print(f"  models/best_regressor.pkl   : {reg_name}")
     print(f"  models/feature_metadata.json")

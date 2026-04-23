@@ -62,12 +62,12 @@ def call_api(endpoint: str, payload: dict):
         r.raise_for_status()
         return r.json(), None
     except requests.exceptions.ConnectionError:
-        return None, "❌ Tidak dapat terhubung ke FastAPI. Pastikan server berjalan di port 8000."
+        return None, "Tidak dapat terhubung ke FastAPI. Pastikan server berjalan di port 8000."
     except requests.exceptions.HTTPError as e:
         detail = r.json().get("detail", str(e)) if r else str(e)
-        return None, f"❌ Error dari API: {detail}"
+        return None, f"Error dari API: {detail}"
     except Exception as e:
-        return None, f"❌ Error: {str(e)}"
+        return None, f"Error: {str(e)}"
 
 
 # HEADER
@@ -84,7 +84,7 @@ with col_s2:
     if is_healthy:
         st.markdown(
             f'<div style="text-align:center"><span class="api-status-ok">'
-            f'✅ FastAPI Connected — '
+            f'FastAPI Connected — '
             f'Classifier: {health_data.get("classifier","?")} | '
             f'Regressor: {health_data.get("regressor","?")}'
             f'</span></div>', unsafe_allow_html=True
@@ -92,7 +92,7 @@ with col_s2:
     else:
         st.markdown(
             '<div style="text-align:center"><span class="api-status-err">'
-            '❌ FastAPI Offline — jalankan: uvicorn api_fastapi:app --reload --port 8000'
+            'FastAPI Offline — jalankan: uvicorn api_fastapi:app --reload --port 8000'
             '</span></div>', unsafe_allow_html=True
         )
 
@@ -140,9 +140,9 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### Pilih Prediksi")
     scenario = st.radio("Skenario", [
-        "🏢 Placement saja (Klasifikasi)",
-        "💰 Salary saja (Regresi)",
-        "🔗 Keduanya (Combined)"
+        "Placement saja (Klasifikasi)",
+        "Salary saja (Regresi)",
+        "Keduanya (Combined)"
     ])
 
     predict_btn = st.button("Kirim ke API & Prediksi", use_container_width=True)
@@ -186,7 +186,7 @@ with tab1:
                     col1, col2 = st.columns(2)
                     with col1:
                         placed = result['placed']
-                        badge = "🟢 **PLACED**" if placed else "🔴 **NOT PLACED**"
+                        badge = "**PLACED**" if placed else "**NOT PLACED**"
                         st.markdown(f"### {badge}")
                         st.metric("Probabilitas Placed",
                                   f"{result['probability_placed']*100:.1f}%")
@@ -222,7 +222,7 @@ with tab1:
                     col1, col2 = st.columns(2)
                     with col1:
                         pred_sal = result['predicted_salary_lpa']
-                        st.markdown(f"### 💰 Estimasi Gaji: **₹ {pred_sal:.2f} LPA**")
+                        st.markdown(f"### Estimasi Gaji: **₹ {pred_sal:.2f} LPA**")
                         st.metric("Range Bawah", f"₹ {result['salary_range_low']:.2f} LPA")
                         st.metric("Range Atas", f"₹ {result['salary_range_high']:.2f} LPA")
 
@@ -263,7 +263,7 @@ with tab1:
                     with col1:
                         pl = result['placement']
                         placed = pl['placed']
-                        badge = "🟢 PLACED" if placed else "🔴 NOT PLACED"
+                        badge = "PLACED" if placed else "NOT PLACED"
                         st.markdown(f"#### {badge}")
                         st.metric("Prob. Placed",
                                   f"{pl['probability_placed']*100:.1f}%")
@@ -296,9 +296,9 @@ with tab2:
 
     if predict_btn and is_healthy:
         endpoint_map = {
-            "🏢 Placement saja (Klasifikasi)": "/predict/placement",
-            "💰 Salary saja (Regresi)": "/predict/salary",
-            "🔗 Keduanya (Combined)": "/predict/both"
+            "Placement saja (Klasifikasi)": "/predict/placement",
+            "Salary saja (Regresi)": "/predict/salary",
+            "Keduanya (Combined)": "/predict/both"
         }
         ep = endpoint_map[scenario]
         st.markdown(f"#### Endpoint: `POST {API_URL}{ep}`")

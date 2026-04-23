@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/564642089202386589/78442574d02c46988a3859210b7ace05/artifacts
+end_time: 1776952329890
+entry_point_name: ''
+experiment_id: '564642089202386589'
+lifecycle_stage: active
+run_id: 78442574d02c46988a3859210b7ace05
+run_name: Random Forest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776952319630
+status: 3
+tags: []
+user_id: '62895'

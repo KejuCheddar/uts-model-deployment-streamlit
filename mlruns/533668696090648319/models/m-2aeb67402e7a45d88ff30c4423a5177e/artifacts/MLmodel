@@ -1,0 +1,23 @@
+artifact_path: file:///C:/Users/62895/Documents/Binus/S4/Model Deployment/UTS/UTS_ModelDeployment/mlruns/533668696090648319/models/m-2aeb67402e7a45d88ff30c4423a5177e/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.11
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+    skops_trusted_types: null
+mlflow_version: 3.10.0
+model_id: m-2aeb67402e7a45d88ff30c4423a5177e
+model_size_bytes: 4969
+model_uuid: m-2aeb67402e7a45d88ff30c4423a5177e
+prompts: null
+run_id: 28082912bbe54d15b38f997eb17fdeb3
+utc_time_created: '2026-04-23 13:52:21.222352'
